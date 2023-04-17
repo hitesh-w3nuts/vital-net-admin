@@ -110,6 +110,28 @@ body > div .alert{padding: 5px 10px;}
 .faqs.multiple .remove-faq{display: block;}
 .faqs .remove-faq svg{display: block; width: 25px;height: 25px;fill: red;}
 
+.testimonials .add-new-testimonial{display: block; width: 25px;height: 25px;cursor: pointer;}
+.testimonials .add-new-testimonial svg{display: block; width: 25px;height: 25px; fill: #007bff;}
+.testimonials .remove-testimonial{width: 25px;height: 25px;cursor: pointer;float: right; display: none;}
+.testimonials.multiple .remove-testimonial{display: block;}
+.testimonials .remove-testimonial svg{display: block; width: 25px;height: 25px;fill: red;}
+
+.preferences .add-new-preferences{display: block; width: 25px;height: 25px;cursor: pointer;}
+.preferences .add-new-preferences svg{display: block; width: 25px;height: 25px; fill: #007bff;}
+.preferences .remove-preferences{width: 25px;height: 25px;cursor: pointer;float: right; display: none;}
+.preferences.multiple .remove-preferences{display: block;}
+.preferences .remove-preferences svg{display: block; width: 25px;height: 25px;fill: red;}
+
+.iconBlocks .add-new-iconBlock{display: block; width: 25px;height: 25px;cursor: pointer;}
+.iconBlocks .add-new-iconBlock svg{display: block; width: 25px;height: 25px; fill: #007bff;}
+.iconBlocks .remove-iconBlock{width: 25px;height: 25px;cursor: pointer;float: right; display: none;}
+.iconBlocks.multiple .remove-iconBlock{display: block;}
+.iconBlocks .remove-iconBlock svg{display: block; width: 25px;height: 25px;fill: red;}
+
+.ck-editor__editable {
+  min-height: 350px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
