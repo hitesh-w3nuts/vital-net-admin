@@ -9,13 +9,14 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 import { BsFillPlusCircleFill, BsFillDashCircleFill } from "react-icons/bs"
-import { POST_HOME_PAGE } from "@/helpers/url_helper";
-import { post } from "@/helpers/api_helper";
+import { GET_PAGE, POST_HOME_PAGE } from "@/helpers/url_helper";
+import { get, post } from "@/helpers/api_helper";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 export default function EditHome() {
   const [Error, SetError] = useState('');
   const [Success, SetSuccess] = useState('');
   const [buttonDisabled, SetButtonDisabled] = useState('');
-  
+  const [getPageStatus, setGetPageStatus] = useState(false);
 
   const [testimonialRows, setTestimonialRows] = useState(1);
   const [preferencesRows, setPreferencesRows] = useState(1);
@@ -70,6 +71,47 @@ export default function EditHome() {
     "callToActionButtonText": "",
     "callToActionButtonLink": "",
   })
+
+
+  // const { register, handleSubmit, reset, control } = useForm({ defaultValues: homePageInputs });
+
+  // const { fields: testimonials, append: appendTestimonial, remove: removeTestimonial } = useFieldArray({
+  //   control,
+  //   name: "testimonials"
+  // });
+
+  // const { fields: preferences, append: appendPreferences, remove: removePreferences } = useFieldArray({
+  //   control,
+  //   name: "preferences"
+  // });
+
+  // const { fields: iconBlocks, append: appendIconBlocks, remove: removeIconBlocks } = useFieldArray({
+  //   control,
+  //   name: "iconBlocks"
+  // });
+
+  const [testimonialItem, setTestimonialItem] = useState({ name: "", text: "", company: "" });
+  const getPageData = async () => {
+    const pageData = await get(GET_PAGE + 'home');
+    if (pageData.result && pageData.data) {
+      const data = pageData.data.content
+      const savedData = {
+        'pageID': pageData.data._id,
+        ...data,
+      }
+      setTestimonialRows((data.testimonials.length)?data.testimonials.length:1);
+      setPreferencesRows((data.preferences.length)?data.preferences.length:1);
+      setIconBlocksRows((data.iconBlocks.length)?data.iconBlocks.length:1);
+      setHomePageInputs(savedData);
+    }
+    setGetPageStatus(true);
+  }
+
+  useState(() => {
+    if (!getPageStatus) {
+      getPageData();
+    }
+  }, [getPageStatus]);
 
   const Editor = dynamic(() => import("../components/Editor"), { ssr: false });
 
@@ -199,7 +241,7 @@ export default function EditHome() {
   };
 
   // form submit event
-  const handleSubmit = async (event) => {
+  const submitForm = async (event) => {
     event.preventDefault();
     SetError("");
     SetSuccess("");
@@ -229,7 +271,7 @@ export default function EditHome() {
       </Head>
       <section className='content'>
         <div className='container-fluid'>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={submitForm}>
             <div className='row'>
               <div className="col-md-12">
                 <h1>Home Page</h1>
@@ -247,13 +289,13 @@ export default function EditHome() {
                         <div className="card-body">
                           <div className="form-group">
                             <label htmlFor="input-title">Content</label>
-                            <Editor data={homePageInputs.bannerContent} />
+                            <Editor data={homePageInputs.bannerContent} changeEvent={(e, editor) => { const data = editor.getData(); setHomePageInputs((input) => ({ ...homePageInputs, bannerContent: data })); }} />
                           </div>
                           <div className="form-group">
                             <label htmlFor="">Image</label>
                             <div className="input-group">
                               <div className="custom-file">
-                                <input type="file" name="bannerImage" className="custom-file-input" onChange={handleInputFileChange} id="bannerImage" accept="image/png, image/gif, image/jpeg, .svg" />
+                                <input type="file" name="bannerImage" className="custom-file-input" onChange={handleInputFileChange} id="bannerImage" accept="image/png, image/gif, image/jpeg, .svg, .webp" />
                                 <label className="custom-file-label" htmlFor="bannerImage">Choose file</label>
                               </div>
                             </div>
@@ -261,15 +303,15 @@ export default function EditHome() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="BannerVideoUrl">Video URL</label>
-                            <input type="text" className="form-control" name="bannerVideoUrl" onChange={handleInputChange} value={homePageInputs.bannerVideoUrl} id="BannerVideoUrl" />
+                            <input type="text" className="form-control" value={homePageInputs.bannerVideoUrl} onChange={handleInputChange} name="bannerVideoUrl" id="BannerVideoUrl" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="BannerButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" name="bannerButtonText" onChange={handleInputChange} value={homePageInputs.bannerButtonText} id="BannerButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.bannerButtonText} onChange={handleInputChange} name="bannerButtonText" id="BannerButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="BannerButtonLink">Button Link</label>
-                            <input type="text" className="form-control" name="bannerButtonLink" onChange={handleInputChange} value={homePageInputs.bannerButtonLink} id="BannerButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.bannerButtonLink} onChange={handleInputChange} name="bannerButtonLink" id="BannerButtonLink" />
                           </div>
                         </div>
                       </div>
@@ -282,7 +324,7 @@ export default function EditHome() {
                             <label htmlFor="">Image</label>
                             <div className="input-group">
                               <div className="custom-file">
-                                <input type="file" name="aboutImage" className="custom-file-input" id="aboutImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg" />
+                                <input type="file" name="aboutImage" className="custom-file-input" id="aboutImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg, .webp" />
                                 <label className="custom-file-label" htmlFor="aboutImage">Choose file</label>
                               </div>
                             </div>
@@ -290,19 +332,19 @@ export default function EditHome() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="aboutTitle">Title</label>
-                            <input type="text" className="form-control" onChange={handleInputChange} name="aboutTitle" value={homePageInputs.aboutTitle} id="aboutTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.aboutTitle} onChange={handleInputChange} name="aboutTitle" id="aboutTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="aboutText">Text</label>
-                            <textarea className="form-control" name="aboutText" onChange={handleInputChange} rows={10} value={homePageInputs.aboutText} id="aboutText" />
+                            <textarea className="form-control" value={homePageInputs.aboutText} onChange={handleInputChange} name="aboutText" rows={10} id="aboutText" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="aboutButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" name="aboutButtonText" onChange={handleInputChange} value={homePageInputs.aboutButtonText} id="aboutButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.aboutButtonText} onChange={handleInputChange} name="aboutButtonText" id="aboutButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="aboutButtonLink">Button Link</label>
-                            <input type="text" className="form-control" name="aboutButtonLink" onChange={handleInputChange} value={homePageInputs.aboutButtonLink} id="aboutButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.aboutButtonLink} onChange={handleInputChange} name="aboutButtonLink" id="aboutButtonLink" />
                           </div>
                         </div>
                       </div>
@@ -315,7 +357,7 @@ export default function EditHome() {
                             <label htmlFor="">Image</label>
                             <div className="input-group">
                               <div className="custom-file">
-                                <input type="file" name="initiativeImage" className="custom-file-input" id="initiativeImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg" />
+                                <input type="file" name="initiativeImage" className="custom-file-input" id="initiativeImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg, .webp" />
                                 <label className="custom-file-label" htmlFor="initiativeImage">Choose file</label>
                               </div>
                             </div>
@@ -323,19 +365,19 @@ export default function EditHome() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="initiativeTitle">Title</label>
-                            <input type="text" className="form-control" name="initiativeTitle" onChange={handleInputChange} value={homePageInputs.initiativeTitle} id="initiativeTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.initiativeTitle} onChange={handleInputChange} name="initiativeTitle" id="initiativeTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="initiativeText">Text</label>
-                            <textarea className="form-control" name="initiativeText" rows={10} onChange={handleInputChange} value={homePageInputs.initiativeText} id="initiativeText" />
+                            <textarea className="form-control" value={homePageInputs.initiativeText} onChange={handleInputChange} name="initiativeText" rows={10} id="initiativeText" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="initiativeButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" name="initiativeButtonText" onChange={handleInputChange} value={homePageInputs.initiativeButtonText} id="initiativeButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.initiativeButtonText} onChange={handleInputChange} name="initiativeButtonText" id="initiativeButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="initiativeButtonLink">Button Link</label>
-                            <input type="text" className="form-control" name="initiativeButtonLink" onChange={handleInputChange} value={homePageInputs.initiativeButtonLink} id="initiativeButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.initiativeButtonLink} onChange={handleInputChange} name="initiativeButtonLink" id="initiativeButtonLink" />
                           </div>
                         </div>
                       </div>
@@ -345,10 +387,12 @@ export default function EditHome() {
                         </div>
                         <div className="card-body">
                           <div className={`testimonials ${(testimonialRows > 1) ? 'multiple' : ''}`}>
-                            {Array.from({ length: testimonialRows }, (_, index) => {
-                              const name = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index].name) ? homePageInputs.testimonials[index].name : "";
-                              const text = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index].text) ? homePageInputs.testimonials[index].text : "";
-                              const company = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index].company) ? homePageInputs.testimonials[index].company : "";
+                            {
+                            Array.from({ length: testimonialRows }, (_, index) => {
+                              const name = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['name'])?homePageInputs.testimonials[index].name:'';
+                              const text = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['text'])?homePageInputs.testimonials[index].text:'';
+                              const company = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['company'])?homePageInputs.testimonials[index].company:'';
+
                               return (
                                 <div key={index} className="testimonialItem">
                                   <div className="card card-primary">
@@ -356,22 +400,22 @@ export default function EditHome() {
                                       <span className='remove-testimonial' onClick={(e) => { e.persist(); removeTestimonial(index); }}><BsFillDashCircleFill /></span>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Name</label>
-                                        <input type="text" className="form-control" name={`testimonial[][name]`} id="input-title" onChange={(e) => { add_new_testimonial('name', e.target.value, index) }} value={name} />
+                                        <input type="text" className="form-control" value={name} onChange={(e) => add_new_testimonial('name', e.target.value, index)} name={`testimonials[${index}][name]`} id="input-title" />
                                       </div>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Text</label>
-                                        <textarea className="form-control" id="input-title" name={`testimonial[][text]`} placeholder="" onChange={(e) => { add_new_testimonial('text', e.target.value, index) }} value={text} rows={3} ></textarea>
+                                        <textarea className="form-control" id="input-title" value={text} onChange={(e) => add_new_testimonial('text', e.target.value, index)} name={`testimonials.${index}.text`} placeholder="" ></textarea>
                                       </div>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Company Name</label>
-                                        <input type="text" className="form-control" name={`testimonial[][company]`} id="input-title" onChange={(e) => { add_new_testimonial('company', e.target.value, index) }} value={company} />
+                                        <input type="text" className="form-control" value={company} onChange={(e) => add_new_testimonial('company', e.target.value, index)} name={`testimonials.${index}.company`} id="input-title" />
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               )
                             })}
-                            <span className='add-new-testimonial' onClick={(e) => { e.persist(); setTestimonialRows(testimonialRows + 1); }}><BsFillPlusCircleFill /></span>
+                            <span className='add-new-testimonial' onClick={(e) => { setTestimonialRows(testimonialRows + 1) }}><BsFillPlusCircleFill /></span>
                           </div>
                         </div>
                       </div>
@@ -384,7 +428,7 @@ export default function EditHome() {
                             <label htmlFor="">Image</label>
                             <div className="input-group">
                               <div className="custom-file">
-                                <input type="file" name="translatingImage" className="custom-file-input" id="translatingImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg" />
+                                <input type="file" name="translatingImage" className="custom-file-input" id="translatingImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg, .webp" />
                                 <label className="custom-file-label" htmlFor="translatingImage">Choose file</label>
                               </div>
                             </div>
@@ -392,19 +436,11 @@ export default function EditHome() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="translatingTitle">Title</label>
-                            <input type="text" className="form-control" name="translatingTitle" onChange={handleInputChange} value={homePageInputs.translatingTitle} id="translatingTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.translatingTitle} onChange={handleInputChange} name="translatingTitle" id="translatingTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="translatingText">Text</label>
-                            <textarea className="form-control" name="translatingText" onChange={handleInputChange} rows={10} value={homePageInputs.translatingText} id="translatingText" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="translatingButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" name="translatingButtonText" onChange={handleInputChange} value={homePageInputs.translatingButtonText} id="translatingButtonTitle" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="translatingButtonLink">Button Link</label>
-                            <input type="text" className="form-control" name="translatingButtonLink" onChange={handleInputChange} value={homePageInputs.translatingButtonLink} id="translatingButtonLink" />
+                            <textarea className="form-control" value={homePageInputs.translatingText} onChange={handleInputChange} name="translatingText" id="translatingText" />
                           </div>
                         </div>
                       </div>
@@ -415,42 +451,42 @@ export default function EditHome() {
                         <div className="card-body">
                           <div className="form-group">
                             <label htmlFor="preferencesTitle">Title</label>
-                            <input type="text" className="form-control" name="preferencesTitle" onChange={handleInputChange} value={homePageInputs.preferencesTitle} id="preferencesTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.preferencesTitle} onChange={handleInputChange} name="preferencesTitle" id="preferencesTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="preferencesText">Text</label>
-                            <textarea className="form-control" name="preferencesText" onChange={handleInputChange} rows={3} value={homePageInputs.preferencesText} id="preferencesText" />
+                            <textarea className="form-control" value={homePageInputs.preferencesText} onChange={handleInputChange} name="preferencesText" id="preferencesText" />
                           </div>
                           <div className={`preferences ${(preferencesRows > 1) ? 'multiple' : ''}`}>
                             {Array.from({ length: preferencesRows }, (_, index) => {
-                              const title = (homePageInputs.preferences[index] && homePageInputs.preferences[index].title) ? homePageInputs.preferences[index].title : "";
-                              const text = (homePageInputs.preferences[index] && homePageInputs.preferences[index].text) ? homePageInputs.preferences[index].text : "";
-                              const buttonText = (homePageInputs.preferences[index] && homePageInputs.preferences[index].buttonText) ? homePageInputs.preferences[index].buttonText : "";
-                              const buttonLink = (homePageInputs.preferences[index] && homePageInputs.preferences[index].buttonLink) ? homePageInputs.preferences[index].buttonLink : "";
-                              const active = (homePageInputs.preferences[index] && homePageInputs.preferences[index].active) ? homePageInputs.preferences[index].active : "";
+                              const title = (homePageInputs.preferences[index] && homePageInputs.preferences[index].title)?homePageInputs.preferences[index].title:'';
+                              const text = (homePageInputs.preferences[index] && homePageInputs.preferences[index].text)?homePageInputs.preferences[index].text:'';
+                              const buttonText = (homePageInputs.preferences[index] && homePageInputs.preferences[index].buttonText)?homePageInputs.preferences[index].buttonText:'';
+                              const buttonLink = (homePageInputs.preferences[index] && homePageInputs.preferences[index].buttonLink)?homePageInputs.preferences[index].buttonLink:'';
+                              const active = (homePageInputs.preferences[index] && homePageInputs.preferences[index].active)?homePageInputs.preferences[index].active:'';
                               return (
                                 <div key={index} className="preferencesItem">
                                   <div className="card card-primary">
                                     <div className="card-body">
-                                      <span className='remove-preferences' onClick={(e) => { e.persist(); removepreferences(index); }}><BsFillDashCircleFill /></span>
+                                      <span className='remove-preferences' onClick={(e) => { e.persist(); removePreference(index); }}><BsFillDashCircleFill /></span>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Title</label>
-                                        <input type="text" className="form-control" name={`preferences[][title]`} id="input-title" onChange={(e) => { add_new_preference_step('title', e.target.value, index) }} value={title} />
+                                        <input type="text" className="form-control" value={title} onChange={(e) => add_new_preference_step('title', e.target.value, index)} name={`preferences.${index}.title`} id="input-title" />
                                       </div>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Text</label>
-                                        <textarea className="form-control" id="input-title" name={`preferences[][text]`} placeholder="" onChange={(e) => { add_new_preference_step('text', e.target.value, index) }} value={text} rows={3} ></textarea>
+                                        <textarea className="form-control" id="input-title" value={text} onChange={(e) => add_new_preference_step('text', e.target.value, index)} name={`preferences.${index}.text`} placeholder="" rows={3} ></textarea>
                                       </div>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Button Text</label>
-                                        <input type="text" className="form-control" name={`preferences[][buttonText]`} id="input-title" onChange={(e) => { add_new_preference_step('buttonText', e.target.value, index) }} value={buttonText} />
+                                        <input type="text" className="form-control" value={buttonText} onChange={(e) => add_new_preference_step('buttonText', e.target.value, index)} name={`preferences.${index}.buttonText`} id="input-title" />
                                       </div>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Button Link</label>
-                                        <input type="text" className="form-control" name={`preferences[][buttonLink]`} id="input-title" onChange={(e) => { add_new_preference_step('buttonLink', e.target.value, index) }} value={buttonLink} />
+                                        <input type="text" className="form-control" name={`preferences.${index}.buttonLink`} id="input-title" value={buttonLink} onChange={(e) => add_new_preference_step('buttonLink', e.target.value, index)} />
                                       </div>
                                       <div className="form-check">
-                                        <input type="checkbox" className="form-check-input" id={`preferencesActive${index}`} onChange={(e) => { add_new_preference_step('active', e.target.checked, index) }} />
+                                        <input type="checkbox" className="form-check-input" onChange={(e) => {add_new_preference_step('active', e.target.checked, index)}} checked={active} id={`preferencesActive${index}`} name={`preferences.${index}.active`} />
                                         <label className="form-check-label" for={`preferencesActive${index}`}>Is Active?</label>
                                       </div>
                                     </div>
@@ -458,7 +494,7 @@ export default function EditHome() {
                                 </div>
                               )
                             })}
-                            <span className='add-new-preferences' onClick={(e) => { e.persist(); setPreferencesRows(preferencesRows + 1); }}><BsFillPlusCircleFill /></span>
+                            <span className='add-new-preferences' onClick={(e) => { e.persist(); setPreferencesRows(preferencesRows + 1) }}><BsFillPlusCircleFill /></span>
                           </div>
                         </div>
                       </div>
@@ -469,16 +505,16 @@ export default function EditHome() {
                         <div className="card-body">
                           <div className="form-group">
                             <label htmlFor="preferencesTitle">Title</label>
-                            <input type="text" className="form-control" name="iconBlockTitle" onChange={handleInputChange} value={homePageInputs.iconBlockTitle} id="iconBlockTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.iconBlockTitle} onChange={handleInputChange} name="iconBlockTitle" id="iconBlockTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="preferencesText">Text</label>
-                            <textarea className="form-control" name="iconBlockText" onChange={handleInputChange} rows={3} value={homePageInputs.iconBlockText} id="iconBlockText" />
+                            <textarea className="form-control" value={homePageInputs.iconBlockText} onChange={handleInputChange} name="iconBlockText" id="iconBlockText" />
                           </div>
                           <div className={`iconBlocks ${(iconBlocksRows > 1) ? 'multiple' : ''}`}>
                             {Array.from({ length: iconBlocksRows }, (_, index) => {
-                              const title = (homePageInputs.iconBlocks[index] && homePageInputs.iconBlocks[index].title) ? homePageInputs.iconBlocks[index].title : "";
-                              const selectedImageName = (homePageInputs.iconBlocks[index] && homePageInputs.iconBlocks[index].fileName) ? homePageInputs.iconBlocks[index].fileName : "";
+                              const title = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['title'])?homePageInputs['iconBlocks'][index]['title']:''
+                              const selectedFileName = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['fileName'])?homePageInputs['iconBlocks'][index]['fileName']:''
                               return (
                                 <div key={index} className="iconBlockItem">
                                   <div className="card card-primary">
@@ -486,18 +522,18 @@ export default function EditHome() {
                                       <span className='remove-iconBlock' onClick={(e) => { e.persist(); removeIconBlock(index); }}><BsFillDashCircleFill /></span>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Title</label>
-                                        <input type="text" className="form-control" name={`iconBlock[][title]`} id="input-title" onChange={(e) => { add_new_icon_block('title', e.target.value, index) }} value={title} />
+                                        <input type="text" className="form-control" value={title} onChange={(e) => add_new_icon_block('title', e.target.value, index)}  name={`iconBlocks.${index}.title`} id="input-title" />
                                       </div>
                                       <div className="form-group">
                                         <div className="form-group">
                                           <label htmlFor="">Icon  Image</label>
                                           <div className="input-group">
                                             <div className="custom-file">
-                                              <input type="file" name={`iconBlock[][image]`} className="custom-file-input" id={`iconImage${index}`} onChange={(e) => { setIconBlockImage(e, index) }} accept="image/png, image/gif, image/jpeg, .svg" />
+                                              <input type="file" name={`iconBlocks.${index}.image`} className="custom-file-input" id={`iconImage${index}`} onChange={(e) => { setIconBlockImage(e, index) }} accept="image/png, image/gif, image/jpeg, .svg, .webp" />
                                               <label className="custom-file-label" htmlFor={`iconImage${index}`}>Choose file</label>
                                             </div>
                                           </div>
-                                          {selectedImageName}
+                                          {selectedFileName}
                                         </div>
                                       </div>
                                     </div>
@@ -505,7 +541,7 @@ export default function EditHome() {
                                 </div>
                               )
                             })}
-                            <span className='add-new-iconBlock' onClick={(e) => { e.persist(); setIconBlocksRows(iconBlocksRows + 1); }}><BsFillPlusCircleFill /></span>
+                            <span className='add-new-iconBlock' onClick={(e) => { e.persist(); setIconBlocksRows(iconBlocksRows+1) }}><BsFillPlusCircleFill /></span>
                           </div>
                         </div>
                       </div>
@@ -518,7 +554,7 @@ export default function EditHome() {
                             <label htmlFor="">Image</label>
                             <div className="input-group">
                               <div className="custom-file">
-                                <input type="file" name="contributeImage" className="custom-file-input" id="ContributeImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg" />
+                                <input type="file" name="contributeImage" className="custom-file-input" id="ContributeImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg, .webp" />
                                 <label className="custom-file-label" htmlFor="ContributeImage">Choose file</label>
                               </div>
                             </div>
@@ -526,19 +562,19 @@ export default function EditHome() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeTitle">Title</label>
-                            <input type="text" className="form-control" onChange={handleInputChange} name="contributeTitle" value={homePageInputs.ContributeTitle} id="ContributeTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.contributeTitle} onChange={handleInputChange}  name="contributeTitle" id="ContributeTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeText">Text</label>
-                            <textarea className="form-control" onChange={handleInputChange} name="contributeText" rows={3} value={homePageInputs.ContributeText} id="ContributeText" />
+                            <textarea className="form-control" value={homePageInputs.contributeText} onChange={handleInputChange}  name="contributeText" rows={3} id="ContributeText" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" onChange={handleInputChange} name="contributeButtonText" value={homePageInputs.ContributeButtonText} id="ContributeButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.contributeButtonText} onChange={handleInputChange}  name="contributeButtonText" id="ContributeButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeButtonLink">Button Link</label>
-                            <input type="text" className="form-control" onChange={handleInputChange} name="contributeButtonLink" value={homePageInputs.ContributeButtonLink} id="ContributeButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.contributeButtonLink} onChange={handleInputChange}  name="contributeButtonLink" id="ContributeButtonLink" />
                           </div>
                         </div>
                       </div>
@@ -549,15 +585,15 @@ export default function EditHome() {
                         <div className="card-body">
                           <div className="form-group">
                             <label htmlFor="blogTitle">Title</label>
-                            <input type="text" className="form-control" onChange={handleInputChange} name="blogTitle" value={homePageInputs.blogTitle} id="blogTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.blogTitle} onChange={handleInputChange}  name="blogTitle" id="blogTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="blogButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" onChange={handleInputChange} name="blogButtonText" value={homePageInputs.blogButtonText} id="blogButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.blogButtonText} onChange={handleInputChange}  name="blogButtonText" id="blogButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="blogButtonLink">Button Link</label>
-                            <input type="text" className="form-control" onChange={handleInputChange} name="blogButtonLink" value={homePageInputs.blogButtonLink} id="blogButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.blogButtonLink} onChange={handleInputChange}  name="blogButtonLink" id="blogButtonLink" />
                           </div>
                         </div>
                       </div>
@@ -570,7 +606,7 @@ export default function EditHome() {
                             <label htmlFor="">Image</label>
                             <div className="input-group">
                               <div className="custom-file">
-                                <input type="file" name="callToActionImage" className="custom-file-input" id="callToActionImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg" />
+                                <input type="file" name="callToActionImage" className="custom-file-input" id="callToActionImage" onChange={handleInputFileChange} accept="image/png, image/gif, image/jpeg, .svg, .webp" />
                                 <label className="custom-file-label" htmlFor="callToActionImage">Choose file</label>
                               </div>
                             </div>
@@ -578,27 +614,28 @@ export default function EditHome() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="callToActionTitle">Title</label>
-                            <input type="text" className="form-control" name="callToActionTitle" onChange={handleInputChange} value={homePageInputs.callToActionTitle} id="callToActionTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.callToActionTitle} onChange={handleInputChange}  name="callToActionTitle" id="callToActionTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="callToActionButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" name="callToActionButtonText" onChange={handleInputChange} value={homePageInputs.callToActionButtonText} id="callToActionButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.callToActionButtonText} onChange={handleInputChange}  name="callToActionButtonText" id="callToActionButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="callToActionButtonLink">Button Link</label>
-                            <input type="text" className="form-control" name="callToActionButtonLink" onChange={handleInputChange} value={homePageInputs.callToActionButtonLink} id="callToActionButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.callToActionButtonLink} onChange={handleInputChange}  name="callToActionButtonLink" id="callToActionButtonLink" />
                           </div>
                         </div>
                       </div>
                     </div>
                     <div className="form-group">
-                      <button className="btn btn-primary">Save</button>
+                      <button className="btn btn-primary"  disabled={buttonDisabled}>Save</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </form>
+
         </div>
       </section>
     </>
