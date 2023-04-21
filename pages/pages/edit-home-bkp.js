@@ -109,7 +109,7 @@ export default function EditHome() {
     }
   }, [getPageStatus]);
 
-  const Editor = dynamic(() => import("../components/Editor"), { ssr: false });
+  const Editor = dynamic(() => import("@/components/Editor"), { ssr: false });
 
   const setIconBlockImage = (event, index) => {
     const file = event.target.files[0];

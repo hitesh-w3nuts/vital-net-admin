@@ -1,17 +1,17 @@
-// import Editor from '@/components/Editor'
 import dynamic from "next/dynamic";
 
 import ErrorMessage from '@/components/ErrorMessage'
 import SuccessMessage from '@/components/SuccessMessage'
 
 import Head from 'next/head'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 import { BsFillPlusCircleFill, BsFillDashCircleFill } from "react-icons/bs"
 import { GET_PAGE, POST_HOME_PAGE } from "@/helpers/url_helper";
 import { get, post } from "@/helpers/api_helper";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+
+const Editor = dynamic(() => import("@/components/Editor"), { ssr: false });
+
 export default function EditHome() {
   const [Error, SetError] = useState('');
   const [Success, SetSuccess] = useState('');
@@ -72,24 +72,6 @@ export default function EditHome() {
     "callToActionButtonLink": "",
   })
 
-
-  // const { register, handleSubmit, reset, control } = useForm({ defaultValues: homePageInputs });
-
-  // const { fields: testimonials, append: appendTestimonial, remove: removeTestimonial } = useFieldArray({
-  //   control,
-  //   name: "testimonials"
-  // });
-
-  // const { fields: preferences, append: appendPreferences, remove: removePreferences } = useFieldArray({
-  //   control,
-  //   name: "preferences"
-  // });
-
-  // const { fields: iconBlocks, append: appendIconBlocks, remove: removeIconBlocks } = useFieldArray({
-  //   control,
-  //   name: "iconBlocks"
-  // });
-
   const [testimonialItem, setTestimonialItem] = useState({ name: "", text: "", company: "" });
   const getPageData = async () => {
     const pageData = await get(GET_PAGE + 'home');
@@ -106,14 +88,12 @@ export default function EditHome() {
     }
     setGetPageStatus(true);
   }
-
-  useState(() => {
+  
+  useEffect(() => {
     if (!getPageStatus) {
       getPageData();
     }
   }, [getPageStatus]);
-
-  const Editor = dynamic(() => import("../components/Editor"), { ssr: false });
 
   const add_new_testimonial = (key, value, index) => {
     const testimonials = homePageInputs.testimonials;
@@ -289,8 +269,9 @@ export default function EditHome() {
                         <div className="card-body">
                           <div className="form-group">
                             <label htmlFor="input-title">Content</label>
-                            <Editor data={homePageInputs.bannerContent} changeEvent={(e, editor) => { const data = editor.getData(); setHomePageInputs((input) => ({ ...homePageInputs, bannerContent: data })); }} />
+                            <Editor data={homePageInputs.bannerContent} blurEvent={(e, editor) => { const data = editor.getData(); setHomePageInputs((input) => ({ ...homePageInputs, bannerContent: data })); }} />
                           </div>
+                          {console.log(homePageInputs.bannerVideoUrl)}
                           <div className="form-group">
                             <label htmlFor="">Image</label>
                             <div className="input-group">
@@ -635,7 +616,6 @@ export default function EditHome() {
               </div>
             </div>
           </form>
-
         </div>
       </section>
     </>

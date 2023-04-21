@@ -132,6 +132,13 @@ body > div .alert{padding: 5px 10px;}
   min-height: 350px;
 }
 
+.hidden{display: none !important;}
+
+.card-body .rdt_Table .rdt_TableBody .rdt_TableCell{font-size: 16px;}
+.card-body .rdt_Table .rdt_TableBody .rdt_TableCell > a + a{margin: 0 0 0 5px;}
+.card-body .rdt_Table .rdt_TableBody .rdt_TableCell a.edit svg *{fill: green}
+.card-body .rdt_Table .rdt_TableBody .rdt_TableCell a.view svg *{fill: rgb(0, 89, 255)}
+.card-body .rdt_Table .rdt_TableBody .rdt_TableCell a.delete svg *{fill: red}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

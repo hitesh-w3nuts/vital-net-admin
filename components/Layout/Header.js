@@ -6,7 +6,7 @@ import { useState } from "react";
 // import $ from "jquery";
 
 import { FaAngleLeft, FaHome } from "react-icons/fa";
-import { BsSliders, BsFillInfoCircleFill, BsFillChatTextFill, BsFillChatFill } from "react-icons/bs";
+import { BsSliders, BsFillInfoCircleFill, BsFillChatTextFill, BsFillChatFill, BsFillClipboard2Fill, BsFillClipboard2PlusFill } from "react-icons/bs";
 
 import { useRouter } from "next/router";
 
@@ -22,31 +22,61 @@ const NavLink = ({ url = "#", title, icon, activeClass }) => (
 const menuItems = [
     {
         'title': "Pages",
+        'path': 'pages',
         'childItems': [
             {
-                'url': "/edit-home",
+                'url': "/pages/edit-home",
                 'title': 'Home Page Options',
+                'showInMenu': true,
                 'icon': <FaHome className="nav-icon" />
             },
             {
-                'url': "/edit-about",
+                'url': "/pages/edit-about",
                 'title': 'About Page Options',
+                'showInMenu': true,
                 'icon': <BsFillInfoCircleFill className="nav-icon" />
             },
             {
-                'url': "/edit-your-preferences",
+                'url': "/pages/edit-your-preferences",
                 'title': 'Preferences Options',
+                'showInMenu': true,
                 'icon': <BsSliders className="nav-icon" />
             },
             {
-                'url': "/edit-faq",
+                'url': "/pages/edit-faq",
                 'title': 'FAQ Page Options',
+                'showInMenu': true,
                 'icon': <BsFillChatTextFill className="nav-icon" />
             },
             {
-                'url': "/edit-contact",
+                'url': "/pages/edit-contact",
                 'title': 'Contact Page Options',
+                'showInMenu': true,
                 'icon': <BsFillChatFill className="nav-icon" />
+            },
+        ]
+    },
+    {
+        'title': "Vital Updates",
+        'path': 'updates',
+        'childItems': [
+            {
+                'url': "/updates/add-new",
+                'title': 'Add new',
+                'showInMenu': true,
+                'icon': <BsFillClipboard2PlusFill className="nav-icon" />
+            },
+            {
+                'url': "/updates/edit/",
+                'title': 'Edit',
+                'showInMenu': false,
+                'icon': <BsFillClipboard2PlusFill className="nav-icon" />
+            },
+            {
+                'url': "/updates/all-updates",
+                'title': 'All updates',
+                'showInMenu': true,
+                'icon': <BsFillClipboard2Fill className="nav-icon" />
             },
         ]
     }
@@ -55,25 +85,28 @@ const menuItems = [
 const checkIsActivePage = (currentPath, url) => {
     return (currentPath === url) ? 'active' : ''
 }
-
 const checkIsActiveChildPage = (currentPath) => {
     for (let index = 0; index < menuItems.length; index++) {
         const element = menuItems[index];
         if (element.childItems && element.childItems.length > 0) {
             const childItems = element.childItems;
+            if (currentPath.includes(element.path) === false) {
+                continue;
+            }
             for (let child = 0; child < childItems.length; child++) {
                 const childElement = childItems[child];
-                if(currentPath == childElement.url){
-                    return "menu-open";
+                if (currentPath == childElement.url || currentPath.includes(childElement.url)) {
+                    return "menu-open"
                 }
             }
         }
     }
+    return ''
 }
-
 const Header = () => {
     const router = useRouter();
     const path = router.pathname;
+    const [activeParent, setActiveParent] = useState("");
     return (
         <>
             <div id="pageLoader" className="preloader flex-column justify-content-center align-items-center">
@@ -91,7 +124,7 @@ const Header = () => {
                         <a href="#" className="nav-link">Contact</a>
                     </li>
                 </ul> */}
-                <ul className="navbar-nav ml-auto">
+                <ul className="navbar-nav ml-auto hidden">
                     <li className="nav-item">
                         <a className="nav-link" data-widget="navbar-search" href="#" role="button">
                             <i className="fas fa-search"></i>
@@ -225,8 +258,8 @@ const Header = () => {
                         <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             {Object.entries(menuItems).map(([i, item]) => {
                                 return (
-                                    <li key={i} className={`nav-item ${checkIsActiveChildPage(path, item.url)}`}>
-                                        <Link href={(item.url) ? item.url : '#'} className={`nav-link ${checkIsActivePage(path, item.url)}`}>
+                                    <li key={i} className={`nav-item ${checkIsActiveChildPage(path, item.title)}`}>
+                                        <Link href={(item.url) ? item.url : '#'} className={`nav-link ${checkIsActivePage(path, item.title)}`}>
                                             <p>
                                                 {item.title}
                                                 {(item.childItems && item.childItems.length > 0) && (<FaAngleLeft className="right" />)}
@@ -234,8 +267,10 @@ const Header = () => {
                                         </Link>
                                         <ul className="nav nav-treeview">
                                             {Object.entries(item.childItems).map(([j, childItem]) => {
-                                                return (<NavLink key={j} url={childItem.url} icon={childItem.icon} title={childItem.title} activeClass={checkIsActivePage(path, childItem.url)} />)
-                                            })};
+                                                if (childItem.showInMenu) {
+                                                    return (<NavLink key={j} url={childItem.url} icon={childItem.icon} title={childItem.title} activeClass={checkIsActivePage(path, childItem.url)} />)
+                                                }
+                                            })}
                                         </ul>
                                     </li>
                                 )
