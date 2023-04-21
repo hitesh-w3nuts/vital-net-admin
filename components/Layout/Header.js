@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { FaAngleLeft, FaHome } from "react-icons/fa";
 import { BsSliders, BsFillInfoCircleFill, BsFillChatTextFill, BsFillChatFill, BsFillClipboard2Fill, BsFillClipboard2PlusFill } from "react-icons/bs";
-
+import { BiCategory, BiLogOutCircle } from "react-icons/bi";
 import { useRouter } from "next/router";
 
 const NavLink = ({ url = "#", title, icon, activeClass }) => (
@@ -54,6 +54,12 @@ const menuItems = [
                 'showInMenu': true,
                 'icon': <BsFillChatFill className="nav-icon" />
             },
+            {
+                'url': "/pages/edit-join-us",
+                'title': 'Join Us Page Options',
+                'showInMenu': true,
+                'icon': <BsFillChatFill className="nav-icon" />
+            },
         ]
     },
     {
@@ -77,6 +83,18 @@ const menuItems = [
                 'title': 'All updates',
                 'showInMenu': true,
                 'icon': <BsFillClipboard2Fill className="nav-icon" />
+            },
+        ]
+    },
+    {
+        'title': "Blogs",
+        'path': 'updates',
+        'childItems': [
+            {
+                'url': "/blogs/categories",
+                'title': 'Categories',
+                'showInMenu': true,
+                'icon': <BiCategory className="nav-icon" />
             },
         ]
     }
@@ -107,6 +125,12 @@ const Header = () => {
     const router = useRouter();
     const path = router.pathname;
     const [activeParent, setActiveParent] = useState("");
+
+    const logout = (e) => {
+        e.preventDefault();
+    }
+
+
     return (
         <>
             <div id="pageLoader" className="preloader flex-column justify-content-center align-items-center">
@@ -275,6 +299,11 @@ const Header = () => {
                                     </li>
                                 )
                             })}
+                            <li className="nav-item">
+                                <a className="nav-link" onClick={logout} href="/pages/edit-join-us#">
+                                    <p><BiLogOutCircle /> Logout</p>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>

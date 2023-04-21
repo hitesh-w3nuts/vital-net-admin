@@ -25,6 +25,8 @@ export default function EditHome() {
 
   const [homePageInputs, setHomePageInputs] = useState({
     'pageID': '',
+    'bannerTitle': "",
+    'bannerSubTitle': "",
     'bannerContent': "",
     "bannerImage": "",
     "bannerImageName": "",
@@ -81,14 +83,14 @@ export default function EditHome() {
         'pageID': pageData.data._id,
         ...data,
       }
-      setTestimonialRows((data.testimonials.length)?data.testimonials.length:1);
-      setPreferencesRows((data.preferences.length)?data.preferences.length:1);
-      setIconBlocksRows((data.iconBlocks.length)?data.iconBlocks.length:1);
+      setTestimonialRows((data.testimonials.length) ? data.testimonials.length : 1);
+      setPreferencesRows((data.preferences.length) ? data.preferences.length : 1);
+      setIconBlocksRows((data.iconBlocks.length) ? data.iconBlocks.length : 1);
       setHomePageInputs(savedData);
     }
     setGetPageStatus(true);
   }
-  
+
   useEffect(() => {
     if (!getPageStatus) {
       getPageData();
@@ -268,10 +270,17 @@ export default function EditHome() {
                         </div>
                         <div className="card-body">
                           <div className="form-group">
+                            <label htmlFor="bannerTitle">Title</label>
+                            <input type="text" className="form-control" value={homePageInputs.bannerTitle} onChange={handleInputChange} name="bannerTitle" id="bannerTitle" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="bannerSubTitle">Sub Title</label>
+                            <input type="text" className="form-control" value={homePageInputs.bannerSubTitle} onChange={handleInputChange} name="bannerSubTitle" id="bannerSubTitle" />
+                          </div>
+                          <div className="form-group">
                             <label htmlFor="input-title">Content</label>
                             <Editor data={homePageInputs.bannerContent} blurEvent={(e, editor) => { const data = editor.getData(); setHomePageInputs((input) => ({ ...homePageInputs, bannerContent: data })); }} />
                           </div>
-                          {console.log(homePageInputs.bannerVideoUrl)}
                           <div className="form-group">
                             <label htmlFor="">Image</label>
                             <div className="input-group">
@@ -369,33 +378,33 @@ export default function EditHome() {
                         <div className="card-body">
                           <div className={`testimonials ${(testimonialRows > 1) ? 'multiple' : ''}`}>
                             {
-                            Array.from({ length: testimonialRows }, (_, index) => {
-                              const name = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['name'])?homePageInputs.testimonials[index].name:'';
-                              const text = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['text'])?homePageInputs.testimonials[index].text:'';
-                              const company = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['company'])?homePageInputs.testimonials[index].company:'';
+                              Array.from({ length: testimonialRows }, (_, index) => {
+                                const name = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['name']) ? homePageInputs.testimonials[index].name : '';
+                                const text = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['text']) ? homePageInputs.testimonials[index].text : '';
+                                const company = (homePageInputs.testimonials[index] && homePageInputs.testimonials[index]['company']) ? homePageInputs.testimonials[index].company : '';
 
-                              return (
-                                <div key={index} className="testimonialItem">
-                                  <div className="card card-primary">
-                                    <div className="card-body">
-                                      <span className='remove-testimonial' onClick={(e) => { e.persist(); removeTestimonial(index); }}><BsFillDashCircleFill /></span>
-                                      <div className="form-group">
-                                        <label htmlFor="input-title">Name</label>
-                                        <input type="text" className="form-control" value={name} onChange={(e) => add_new_testimonial('name', e.target.value, index)} name={`testimonials[${index}][name]`} id="input-title" />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="input-title">Text</label>
-                                        <textarea className="form-control" id="input-title" value={text} onChange={(e) => add_new_testimonial('text', e.target.value, index)} name={`testimonials.${index}.text`} placeholder="" ></textarea>
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="input-title">Company Name</label>
-                                        <input type="text" className="form-control" value={company} onChange={(e) => add_new_testimonial('company', e.target.value, index)} name={`testimonials.${index}.company`} id="input-title" />
+                                return (
+                                  <div key={index} className="testimonialItem">
+                                    <div className="card card-primary">
+                                      <div className="card-body">
+                                        <span className='remove-testimonial' onClick={(e) => { e.persist(); removeTestimonial(index); }}><BsFillDashCircleFill /></span>
+                                        <div className="form-group">
+                                          <label htmlFor="input-title">Name</label>
+                                          <input type="text" className="form-control" value={name} onChange={(e) => add_new_testimonial('name', e.target.value, index)} name={`testimonials[${index}][name]`} id="input-title" />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="input-title">Text</label>
+                                          <textarea className="form-control" id="input-title" value={text} onChange={(e) => add_new_testimonial('text', e.target.value, index)} name={`testimonials.${index}.text`} placeholder="" ></textarea>
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="input-title">Company Name</label>
+                                          <input type="text" className="form-control" value={company} onChange={(e) => add_new_testimonial('company', e.target.value, index)} name={`testimonials.${index}.company`} id="input-title" />
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                              )
-                            })}
+                                )
+                              })}
                             <span className='add-new-testimonial' onClick={(e) => { setTestimonialRows(testimonialRows + 1) }}><BsFillPlusCircleFill /></span>
                           </div>
                         </div>
@@ -440,11 +449,11 @@ export default function EditHome() {
                           </div>
                           <div className={`preferences ${(preferencesRows > 1) ? 'multiple' : ''}`}>
                             {Array.from({ length: preferencesRows }, (_, index) => {
-                              const title = (homePageInputs.preferences[index] && homePageInputs.preferences[index].title)?homePageInputs.preferences[index].title:'';
-                              const text = (homePageInputs.preferences[index] && homePageInputs.preferences[index].text)?homePageInputs.preferences[index].text:'';
-                              const buttonText = (homePageInputs.preferences[index] && homePageInputs.preferences[index].buttonText)?homePageInputs.preferences[index].buttonText:'';
-                              const buttonLink = (homePageInputs.preferences[index] && homePageInputs.preferences[index].buttonLink)?homePageInputs.preferences[index].buttonLink:'';
-                              const active = (homePageInputs.preferences[index] && homePageInputs.preferences[index].active)?homePageInputs.preferences[index].active:'';
+                              const title = (homePageInputs.preferences[index] && homePageInputs.preferences[index].title) ? homePageInputs.preferences[index].title : '';
+                              const text = (homePageInputs.preferences[index] && homePageInputs.preferences[index].text) ? homePageInputs.preferences[index].text : '';
+                              const buttonText = (homePageInputs.preferences[index] && homePageInputs.preferences[index].buttonText) ? homePageInputs.preferences[index].buttonText : '';
+                              const buttonLink = (homePageInputs.preferences[index] && homePageInputs.preferences[index].buttonLink) ? homePageInputs.preferences[index].buttonLink : '';
+                              const active = (homePageInputs.preferences[index] && homePageInputs.preferences[index].active) ? homePageInputs.preferences[index].active : '';
                               return (
                                 <div key={index} className="preferencesItem">
                                   <div className="card card-primary">
@@ -467,8 +476,8 @@ export default function EditHome() {
                                         <input type="text" className="form-control" name={`preferences.${index}.buttonLink`} id="input-title" value={buttonLink} onChange={(e) => add_new_preference_step('buttonLink', e.target.value, index)} />
                                       </div>
                                       <div className="form-check">
-                                        <input type="checkbox" className="form-check-input" onChange={(e) => {add_new_preference_step('active', e.target.checked, index)}} checked={active} id={`preferencesActive${index}`} name={`preferences.${index}.active`} />
-                                        <label className="form-check-label" for={`preferencesActive${index}`}>Is Active?</label>
+                                        <input type="checkbox" className="form-check-input" onChange={(e) => { add_new_preference_step('active', e.target.checked, index) }} checked={active} id={`preferencesActive${index}`} name={`preferences.${index}.active`} />
+                                        <label className="form-check-label" htmlFor={`preferencesActive${index}`}>Is Active?</label>
                                       </div>
                                     </div>
                                   </div>
@@ -494,8 +503,8 @@ export default function EditHome() {
                           </div>
                           <div className={`iconBlocks ${(iconBlocksRows > 1) ? 'multiple' : ''}`}>
                             {Array.from({ length: iconBlocksRows }, (_, index) => {
-                              const title = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['title'])?homePageInputs['iconBlocks'][index]['title']:''
-                              const selectedFileName = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['fileName'])?homePageInputs['iconBlocks'][index]['fileName']:''
+                              const title = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['title']) ? homePageInputs['iconBlocks'][index]['title'] : ''
+                              const selectedFileName = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['fileName']) ? homePageInputs['iconBlocks'][index]['fileName'] : ''
                               return (
                                 <div key={index} className="iconBlockItem">
                                   <div className="card card-primary">
@@ -503,7 +512,7 @@ export default function EditHome() {
                                       <span className='remove-iconBlock' onClick={(e) => { e.persist(); removeIconBlock(index); }}><BsFillDashCircleFill /></span>
                                       <div className="form-group">
                                         <label htmlFor="input-title">Title</label>
-                                        <input type="text" className="form-control" value={title} onChange={(e) => add_new_icon_block('title', e.target.value, index)}  name={`iconBlocks.${index}.title`} id="input-title" />
+                                        <input type="text" className="form-control" value={title} onChange={(e) => add_new_icon_block('title', e.target.value, index)} name={`iconBlocks.${index}.title`} id="input-title" />
                                       </div>
                                       <div className="form-group">
                                         <div className="form-group">
@@ -522,7 +531,7 @@ export default function EditHome() {
                                 </div>
                               )
                             })}
-                            <span className='add-new-iconBlock' onClick={(e) => { e.persist(); setIconBlocksRows(iconBlocksRows+1) }}><BsFillPlusCircleFill /></span>
+                            <span className='add-new-iconBlock' onClick={(e) => { e.persist(); setIconBlocksRows(iconBlocksRows + 1) }}><BsFillPlusCircleFill /></span>
                           </div>
                         </div>
                       </div>
@@ -543,19 +552,19 @@ export default function EditHome() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeTitle">Title</label>
-                            <input type="text" className="form-control" value={homePageInputs.contributeTitle} onChange={handleInputChange}  name="contributeTitle" id="ContributeTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.contributeTitle} onChange={handleInputChange} name="contributeTitle" id="ContributeTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeText">Text</label>
-                            <textarea className="form-control" value={homePageInputs.contributeText} onChange={handleInputChange}  name="contributeText" rows={3} id="ContributeText" />
+                            <textarea className="form-control" value={homePageInputs.contributeText} onChange={handleInputChange} name="contributeText" rows={3} id="ContributeText" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" value={homePageInputs.contributeButtonText} onChange={handleInputChange}  name="contributeButtonText" id="ContributeButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.contributeButtonText} onChange={handleInputChange} name="contributeButtonText" id="ContributeButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeButtonLink">Button Link</label>
-                            <input type="text" className="form-control" value={homePageInputs.contributeButtonLink} onChange={handleInputChange}  name="contributeButtonLink" id="ContributeButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.contributeButtonLink} onChange={handleInputChange} name="contributeButtonLink" id="ContributeButtonLink" />
                           </div>
                         </div>
                       </div>
@@ -566,15 +575,15 @@ export default function EditHome() {
                         <div className="card-body">
                           <div className="form-group">
                             <label htmlFor="blogTitle">Title</label>
-                            <input type="text" className="form-control" value={homePageInputs.blogTitle} onChange={handleInputChange}  name="blogTitle" id="blogTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.blogTitle} onChange={handleInputChange} name="blogTitle" id="blogTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="blogButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" value={homePageInputs.blogButtonText} onChange={handleInputChange}  name="blogButtonText" id="blogButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.blogButtonText} onChange={handleInputChange} name="blogButtonText" id="blogButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="blogButtonLink">Button Link</label>
-                            <input type="text" className="form-control" value={homePageInputs.blogButtonLink} onChange={handleInputChange}  name="blogButtonLink" id="blogButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.blogButtonLink} onChange={handleInputChange} name="blogButtonLink" id="blogButtonLink" />
                           </div>
                         </div>
                       </div>
@@ -595,21 +604,21 @@ export default function EditHome() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="callToActionTitle">Title</label>
-                            <input type="text" className="form-control" value={homePageInputs.callToActionTitle} onChange={handleInputChange}  name="callToActionTitle" id="callToActionTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.callToActionTitle} onChange={handleInputChange} name="callToActionTitle" id="callToActionTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="callToActionButtonTitle">Button Title</label>
-                            <input type="text" className="form-control" value={homePageInputs.callToActionButtonText} onChange={handleInputChange}  name="callToActionButtonText" id="callToActionButtonTitle" />
+                            <input type="text" className="form-control" value={homePageInputs.callToActionButtonText} onChange={handleInputChange} name="callToActionButtonText" id="callToActionButtonTitle" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="callToActionButtonLink">Button Link</label>
-                            <input type="text" className="form-control" value={homePageInputs.callToActionButtonLink} onChange={handleInputChange}  name="callToActionButtonLink" id="callToActionButtonLink" />
+                            <input type="text" className="form-control" value={homePageInputs.callToActionButtonLink} onChange={handleInputChange} name="callToActionButtonLink" id="callToActionButtonLink" />
                           </div>
                         </div>
                       </div>
                     </div>
                     <div className="form-group">
-                      <button className="btn btn-primary"  disabled={buttonDisabled}>Save</button>
+                      <button className="btn btn-primary" disabled={buttonDisabled}>Save</button>
                     </div>
                   </div>
                 </div>

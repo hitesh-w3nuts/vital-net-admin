@@ -27,6 +27,7 @@
     "react-redux": "^8.0.5",
     "react-simple-wysiwyg": "^2.2.5",
     "redux": "^4.2.0",
-    "simple-react-validator": "^1.6.2"
+    "simple-react-validator": "^1.6.2",
+    "sweetalert2": "^11.7.3"
   }
 }
