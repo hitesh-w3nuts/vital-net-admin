@@ -53,8 +53,8 @@ export default function EditPreferences() {
     }, [getPageStatus]);
 
     const add_new_testimonial = (key, value, index) => {
-        const testimonials = (preferencesPageInputs.testimonials)?preferencesPageInputs.testimonials:[];
-        
+        const testimonials = (preferencesPageInputs.testimonials) ? preferencesPageInputs.testimonials : [];
+
         testimonials[index] = {
             ...testimonials[index],
             ...{ [key]: value }
@@ -179,16 +179,22 @@ export default function EditPreferences() {
     return (
         <>
             <Head>
-                <title>Dashboard</title>
+                <title>About</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">About</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <section className='content'>
                 <div className='container-fluid'>
                     <form onSubmit={submitForm}>
                         <div className='row'>
-                            <div className="col-md-12">
-                                <h1>About</h1>
-                            </div>
                             <div className='col-md-12'>
                                 <div className="card card-primary">
                                     <div className="card-body">
@@ -208,7 +214,9 @@ export default function EditPreferences() {
                                                                 <label className="custom-file-label" htmlFor="bannerImage">Choose file</label>
                                                             </div>
                                                         </div>
-                                                        {preferencesPageInputs.bannerImageName}
+                                                        <div className="image-wrap">
+                                                            <img src={preferencesPageInputs.bannerImageUrl} />
+                                                        </div>
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="BannerTitle">Title</label>
@@ -259,6 +267,7 @@ export default function EditPreferences() {
                                                             const title = (preferencesPageInputs['iconBlocks'][index] && preferencesPageInputs['iconBlocks'][index]['title']) ? preferencesPageInputs['iconBlocks'][index]['title'] : ''
                                                             const text = (preferencesPageInputs['iconBlocks'][index] && preferencesPageInputs['iconBlocks'][index]['text']) ? preferencesPageInputs['iconBlocks'][index]['text'] : ''
                                                             const selectedFileName = (preferencesPageInputs['iconBlocks'][index] && preferencesPageInputs['iconBlocks'][index]['fileName']) ? preferencesPageInputs['iconBlocks'][index]['fileName'] : ''
+                                                            const selectedFileUrl = (preferencesPageInputs['iconBlocks'][index] && preferencesPageInputs['iconBlocks'][index]['imageUrl']) ? preferencesPageInputs['iconBlocks'][index]['imageUrl'] : ''
                                                             return (
                                                                 <div key={index} className="iconBlockItem">
                                                                     <div className="card card-primary">
@@ -282,6 +291,9 @@ export default function EditPreferences() {
                                                                                         </div>
                                                                                     </div>
                                                                                     {selectedFileName}
+                                                                                    <div className="image-wrap">
+                                                                                        <img src={selectedFileUrl} />
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

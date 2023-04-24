@@ -16,10 +16,10 @@ export default function DefaultLayout({ children }) {
 		if (!is_login()) {
 			router.push("/login");
 		} else {
-			// document.getElementById("pageLoader").style.height = "0px";
-			// setTimeout(() => {
-			// 	document.getElementById("pageLoaderLogo").style.display = "none";
-			// }, 300)
+			document.getElementById("pageLoader").style.height = 0;
+			setTimeout(() => {
+				document.getElementById("pageLoaderLogo").style.display = 'none';
+			}, 200);
 		}
 	}, []);
 

@@ -68,6 +68,7 @@ export default function AddNewUpdate() {
         {
             name: '#',
             selector: row => row.number,
+            maxWidth:"10px"
         },
         {
             name: 'Name',
@@ -150,12 +151,18 @@ export default function AddNewUpdate() {
                 <title>Dashboard</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Categories</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <section className='content'>
                 <div className='container-fluid'>
                     <div className='row'>
-                        <div className="col-md-12">
-                            <h1>Vital Updates</h1>
-                        </div>
                         <div className='col-md-4'>
                             <div className="card card-primary">
                                 <div className="card-body">

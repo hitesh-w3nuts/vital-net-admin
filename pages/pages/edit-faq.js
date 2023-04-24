@@ -20,22 +20,22 @@ export default function EditHome() {
     const [forceUpdate, setForceUpdate] = useState();
 
     const getPageData = async () => {
-        const pageData = await get(GET_PAGE+'faq');
-        if(pageData.result && pageData.data){
+        const pageData = await get(GET_PAGE + 'faq');
+        if (pageData.result && pageData.data) {
             const savedData = {
-                'pageID': pageData.data._id, 
-                'pageTitle': pageData.data.title, 
-                'pageText': pageData.data.text, 
-                "faqs": (pageData.data.content.length)?pageData.data.content:[],
+                'pageID': pageData.data._id,
+                'pageTitle': pageData.data.title,
+                'pageText': pageData.data.text,
+                "faqs": (pageData.data.content.length) ? pageData.data.content : [],
             }
             setFaqInputs(savedData);
-            setRows((savedData.faqs.length)?savedData.faqs.length:1);
+            setRows((savedData.faqs.length) ? savedData.faqs.length : 1);
         }
         setGetPageStatus(true);
     }
 
     useState(() => {
-        if(!getPageStatus){
+        if (!getPageStatus) {
             getPageData();
         }
     }, [getPageStatus]);
@@ -113,18 +113,25 @@ export default function EditHome() {
             <Head>
                 <title>FAQs</title>
             </Head>
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">FAQs</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <section className='content'>
                 <div className='container-fluid'>
                     <form onSubmit={handleSubmit}>
                         <div className='row'>
-                            <div className="col-md-12">
-                                <h1>FAQs</h1>
-                            </div>
+
                             <div className='col-md-12'>
                                 <div className="card card-primary">
                                     <div className="card-body">
                                         <ErrorMessage message={Error} />
-                                        <SuccessMessage message={Success}/>
+                                        <SuccessMessage message={Success} />
                                         <div className="form-group">
                                             <label htmlFor="input-title">Title</label>
                                             <input type="text" className="form-control" name='pageTitle' value={faqInputs.pageTitle} onChange={handleInputChange} id="input-title" placeholder="Enter Title" />

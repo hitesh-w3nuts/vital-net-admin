@@ -119,16 +119,23 @@ export default function EditPreferences() {
     return (
         <>
             <Head>
-                <title>Dashboard</title>
+                <title>Your Preferences</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Your Preferences</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <section className='content'>
                 <div className='container-fluid'>
                     <form onSubmit={submitForm}>
                         <div className='row'>
-                            <div className="col-md-12">
-                                <h1>Your preferences</h1>
-                            </div>
+
                             <div className='col-md-12'>
                                 <div className="card card-primary">
                                     <div className="card-body">
@@ -148,7 +155,9 @@ export default function EditPreferences() {
                                                                 <label className="custom-file-label" htmlFor="bannerImage">Choose file</label>
                                                             </div>
                                                         </div>
-                                                        {preferencesPageInputs.bannerImageName}
+                                                        <div className="image-wrap">
+                                                            <img src={preferencesPageInputs.bannerImageUrl} />
+                                                        </div>
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="BannerTitle">Title</label>

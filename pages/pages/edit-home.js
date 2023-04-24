@@ -251,13 +251,20 @@ export default function EditHome() {
         <title>Dashboard</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Home</h1>
+            </div>
+          </div>
+        </div>
+      </div>
       <section className='content'>
         <div className='container-fluid'>
           <form onSubmit={submitForm}>
             <div className='row'>
-              <div className="col-md-12">
-                <h1>Home Page</h1>
-              </div>
+
               <div className='col-md-12'>
                 <div className="card card-primary">
                   <div className="card-body">
@@ -289,7 +296,9 @@ export default function EditHome() {
                                 <label className="custom-file-label" htmlFor="bannerImage">Choose file</label>
                               </div>
                             </div>
-                            {homePageInputs.bannerImageName}
+                            <div className="image-wrap">
+                              <img src={homePageInputs.bannerImageUrl} />
+                            </div>
                           </div>
                           <div className="form-group">
                             <label htmlFor="BannerVideoUrl">Video URL</label>
@@ -318,7 +327,9 @@ export default function EditHome() {
                                 <label className="custom-file-label" htmlFor="aboutImage">Choose file</label>
                               </div>
                             </div>
-                            {homePageInputs.aboutImageName}
+                            <div className="image-wrap">
+                              <img src={homePageInputs.aboutImageUrl} />
+                            </div>
                           </div>
                           <div className="form-group">
                             <label htmlFor="aboutTitle">Title</label>
@@ -351,7 +362,9 @@ export default function EditHome() {
                                 <label className="custom-file-label" htmlFor="initiativeImage">Choose file</label>
                               </div>
                             </div>
-                            {homePageInputs.initiativeImageName}
+                            <div className="image-wrap">
+                              <img src={homePageInputs.initiativeImageUrl} />
+                            </div>
                           </div>
                           <div className="form-group">
                             <label htmlFor="initiativeTitle">Title</label>
@@ -422,7 +435,9 @@ export default function EditHome() {
                                 <label className="custom-file-label" htmlFor="translatingImage">Choose file</label>
                               </div>
                             </div>
-                            {homePageInputs.translatingImageName}
+                            <div className="image-wrap">
+                              <img src={homePageInputs.translatingImageUrl} />
+                            </div>
                           </div>
                           <div className="form-group">
                             <label htmlFor="translatingTitle">Title</label>
@@ -503,8 +518,10 @@ export default function EditHome() {
                           </div>
                           <div className={`iconBlocks ${(iconBlocksRows > 1) ? 'multiple' : ''}`}>
                             {Array.from({ length: iconBlocksRows }, (_, index) => {
+                              console.log(homePageInputs['iconBlocks'][index])
                               const title = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['title']) ? homePageInputs['iconBlocks'][index]['title'] : ''
                               const selectedFileName = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['fileName']) ? homePageInputs['iconBlocks'][index]['fileName'] : ''
+                              const selectedFileUrl = (homePageInputs['iconBlocks'][index] && homePageInputs['iconBlocks'][index]['imageUrl']) ? homePageInputs['iconBlocks'][index]['imageUrl'] : ''
                               return (
                                 <div key={index} className="iconBlockItem">
                                   <div className="card card-primary">
@@ -515,15 +532,15 @@ export default function EditHome() {
                                         <input type="text" className="form-control" value={title} onChange={(e) => add_new_icon_block('title', e.target.value, index)} name={`iconBlocks.${index}.title`} id="input-title" />
                                       </div>
                                       <div className="form-group">
-                                        <div className="form-group">
-                                          <label htmlFor="">Icon  Image</label>
-                                          <div className="input-group">
-                                            <div className="custom-file">
-                                              <input type="file" name={`iconBlocks.${index}.image`} className="custom-file-input" id={`iconImage${index}`} onChange={(e) => { setIconBlockImage(e, index) }} accept="image/png, image/gif, image/jpeg, .svg, .webp" />
-                                              <label className="custom-file-label" htmlFor={`iconImage${index}`}>Choose file</label>
-                                            </div>
+                                        <label htmlFor="">Icon  Image</label>
+                                        <div className="input-group">
+                                          <div className="custom-file">
+                                            <input type="file" name={`iconBlocks.${index}.image`} className="custom-file-input" id={`iconImage${index}`} onChange={(e) => { setIconBlockImage(e, index) }} accept="image/png, image/gif, image/jpeg, .svg, .webp" />
+                                            <label className="custom-file-label" htmlFor={`iconImage${index}`}>Choose file</label>
                                           </div>
-                                          {selectedFileName}
+                                        </div>
+                                        <div className="image-wrap">
+                                          <img src={selectedFileUrl} />
                                         </div>
                                       </div>
                                     </div>
@@ -548,7 +565,9 @@ export default function EditHome() {
                                 <label className="custom-file-label" htmlFor="ContributeImage">Choose file</label>
                               </div>
                             </div>
-                            {homePageInputs.contributeImageName}
+                            <div className="image-wrap">
+                              <img src={homePageInputs.contributeImageUrl} />
+                            </div>
                           </div>
                           <div className="form-group">
                             <label htmlFor="ContributeTitle">Title</label>
@@ -600,7 +619,9 @@ export default function EditHome() {
                                 <label className="custom-file-label" htmlFor="callToActionImage">Choose file</label>
                               </div>
                             </div>
-                            {homePageInputs.callToActionImageName}
+                            <div className="image-wrap">
+                              <img src={homePageInputs.callToActionImageUrl} />
+                            </div>
                           </div>
                           <div className="form-group">
                             <label htmlFor="callToActionTitle">Title</label>

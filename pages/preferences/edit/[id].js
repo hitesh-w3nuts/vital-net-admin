@@ -1,24 +1,43 @@
 import ErrorMessage from "@/components/ErrorMessage";
 import SuccessMessage from "@/components/SuccessMessage";
-import { post } from "@/helpers/api_helper";
-import { POST_ADD_VITAL_UPDATE } from "@/helpers/url_helper";
+import { get, post } from "@/helpers/api_helper";
+import { POST_ADD_VITAL_UPDATE, GET_VITAL_UPDATE } from "@/helpers/url_helper";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const Editor = dynamic(() => import("@/components/Editor"), { ssr: false });
 export default function AddNewUpdate() {
+    const router = useRouter();
+    const { id } = router.query
     const [Error, SetError] = useState('');
     const [Success, SetSuccess] = useState('');
     const [buttonDisabled, SetButtonDisabled] = useState('');
     const [getPageStatus, setGetPageStatus] = useState(false);
     const [updateInputs, setUpdateInputs] = useState({
-        'pageID': '',
         "title": "",
         "description": "",
         'image': "",
         'imageName': "",
     })
+
+
+    const getUpdateData = async () => {
+        const pageData = await get(GET_VITAL_UPDATE + id);
+        if (pageData.result && pageData.data) {
+            const data = pageData.data;
+            setUpdateInputs(data);
+        }
+        setGetPageStatus(true);
+    }
+
+    useEffect(() => {
+        if (id !== undefined && !getPageStatus) {
+            getUpdateData();
+        }
+        console.log(id)
+    }, [id]);
 
     //handle file change
     const handleInputFileChange = (event) => {
@@ -78,23 +97,16 @@ export default function AddNewUpdate() {
     return (
         <>
             <Head>
-                <title>Add new update</title>
+                <title>Dashboard</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0">Add new update</h1>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <section className='content'>
                 <div className='container-fluid'>
                     <form onSubmit={submitForm}>
                         <div className='row'>
-
+                            <div className="col-md-12">
+                                <h1>Edit question</h1>
+                            </div>
                             <div className='col-md-12'>
                                 <div className="card card-primary">
                                     <div className="card-body">
@@ -108,7 +120,9 @@ export default function AddNewUpdate() {
                                                     <label className="custom-file-label" htmlFor="image">Choose file</label>
                                                 </div>
                                             </div>
-                                            {updateInputs.imageName}
+                                            <div className="image-wrap">
+                                                <img src={updateInputs.imageUrl} />
+                                            </div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="title">Title</label>

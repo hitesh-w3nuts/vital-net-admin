@@ -104,6 +104,10 @@ body > div .card-primary.card-outline{border-top: 3px solid #F38500;}
 body > div .card-primary.card-outline .btn-primary{background-color: #F38500;border-color: #F38500;}
 body > div .alert{padding: 5px 10px;}
 
+.nav-sidebar>.nav-item > .nav-link .nav-icon{margin-right: 8px;}
+.nav-sidebar>.nav-item.menu-open ul{display: block !important;}
+.nav-sidebar>.nav-item:not(.menu-open) ul{display: none !important;}
+
 .faqs .add-new-faq{display: block; width: 25px;height: 25px;cursor: pointer;}
 .faqs .add-new-faq svg{display: block; width: 25px;height: 25px; fill: #007bff;}
 .faqs .remove-faq{width: 25px;height: 25px;cursor: pointer;float: right; display: none;}
@@ -139,6 +143,16 @@ body > div .alert{padding: 5px 10px;}
 .card-body .rdt_Table .rdt_TableBody .rdt_TableCell a.edit svg *{fill: green}
 .card-body .rdt_Table .rdt_TableBody .rdt_TableCell a.view svg *{fill: rgb(0, 89, 255)}
 .card-body .rdt_Table .rdt_TableBody .rdt_TableCell a.delete svg *{fill: red}
+
+.image-wrap{max-width: 150px;height: auto;margin: 5px 0 0 0;}
+.image-wrap img{max-width: 100%;}
+
+.react-select-container{z-index: 9999999999;}
+
+.rdt_Table .rdt_TableHead .rdt_TableCol{display: table-cell;vertical-align: inherit;font-weight: bold;text-align: center;font-size: 1rem;}
+.card-body .rdt_Pagination{font-weight: bold;text-align: center;font-size: 1rem;}
+.card-body .rdt_Pagination svg path{filter: black;}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

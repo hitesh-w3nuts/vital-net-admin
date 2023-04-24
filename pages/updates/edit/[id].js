@@ -34,7 +34,6 @@ export default function AddNewUpdate() {
 
     useEffect(() => {
         if (id !== undefined && !getPageStatus) {
-            
             getUpdateData();
         }
         console.log(id)
@@ -98,16 +97,22 @@ export default function AddNewUpdate() {
     return (
         <>
             <Head>
-                <title>Dashboard</title>
+                <title>Edit Update</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Edit Update</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <section className='content'>
                 <div className='container-fluid'>
                     <form onSubmit={submitForm}>
                         <div className='row'>
-                            <div className="col-md-12">
-                                <h1>Contact</h1>
-                            </div>
                             <div className='col-md-12'>
                                 <div className="card card-primary">
                                     <div className="card-body">
@@ -121,7 +126,9 @@ export default function AddNewUpdate() {
                                                     <label className="custom-file-label" htmlFor="image">Choose file</label>
                                                 </div>
                                             </div>
-                                            {updateInputs.imageName}
+                                            <div className="image-wrap">
+                                                <img src={updateInputs.imageUrl} />
+                                            </div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="title">Title</label>

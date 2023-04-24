@@ -76,7 +76,7 @@ const Login = () => {
                 <div className="login-box">
                     <div className="card card-outline card-primary">
                         <div className="card-header text-center">
-                            <a href="../../index2.html" className="h1"><b>Admin</b>LTE</a>
+                            <a href="/" className="h1"><img src="logo.svg" /></a>
                         </div>
                         <div className="card-body">
                             <p className="login-box-msg">Sign in to start your session</p>
@@ -107,7 +107,7 @@ const Login = () => {
                                 </div>
                             </form>
                             <p className="mb-1">
-                                <a href="forgot-password.html">I forgot my password</a>
+                                {/* <a href="forgot-password.html">I forgot my password</a> */}
                             </p>
                         </div>
                     </div>
