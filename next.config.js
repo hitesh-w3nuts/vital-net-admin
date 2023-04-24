@@ -3,7 +3,8 @@ const nextConfig = {
 	swcMinify: true,
 	reactStrictMode: false,
 	env: { 
-        NEXT_PUBLIC_API_URL: "https://demo.vital-net.org:8000/api/",
+        //NEXT_PUBLIC_API_URL: "https://demo.vital-net.org:8000/api/",
+        NEXT_PUBLIC_API_URL: "http://localhost:8000/api/",
         FRONT_END_URL: "https://demo.vital-net.org/",
     },
     images: {

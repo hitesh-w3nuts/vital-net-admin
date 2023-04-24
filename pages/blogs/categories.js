@@ -11,6 +11,7 @@ import { BsPencil, BsEyeFill, BsFillTrashFill } from "react-icons/bs";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import Swal from 'sweetalert2'
 
+import InputColor from 'react-input-color';
 
 export default function AddNewUpdate() {
     const [Error, SetError] = useState('');
@@ -22,9 +23,11 @@ export default function AddNewUpdate() {
 
     const [data, setData] = useState([]);
     const [getPageStatus, setGetPageStatus] = useState(false);
-    const [categoryInputs, setCategoryInputs] = useState({ name: "" });
+    const [categoryInputs, setCategoryInputs] = useState({ name: "", color: "#ececec" });
+    const [color, setColor] = useState({});
 
-    const deleteCategory = async(id) => {
+
+    const deleteCategory = async (id) => {
         var res_data = await del(POST_ADD_CATEGORY + id);
         if (res_data.result) {
             SetDeleteSuccess(res_data.message);
@@ -50,17 +53,18 @@ export default function AddNewUpdate() {
             showCancelButton: true,
             cancelButtonText: 'Cancel'
         }).then((result) => {
-            if(result.isConfirmed){
+            if (result.isConfirmed) {
                 deleteCategory(id);
-            }else{
+            } else {
                 setCatID('');
             }
-        })   
+        })
     };
 
     const updateCategory = (event, row) => {
         event.preventDefault();
-        setCategoryInputs((input) => ({ ...categoryInputs, name: row.name }));
+        setCategoryInputs((input) => ({ ...categoryInputs, name: row.name, color: row.color }));
+        document.querySelector(".color-control > span > span").style = `background-color: ${row.color}`;
         setCatID(row._id);
     };
 
@@ -68,7 +72,7 @@ export default function AddNewUpdate() {
         {
             name: '#',
             selector: row => row.number,
-            maxWidth:"10px"
+            maxWidth: "10px"
         },
         {
             name: 'Name',
@@ -129,12 +133,13 @@ export default function AddNewUpdate() {
         var res_data = await post(POST_ADD_CATEGORY + catID, categoryInputs);
         if (res_data.result) {
             SetSuccess(res_data.message);
-            setCategoryInputs((input) => ({ ...categoryInputs, name: "" }));
+            setCategoryInputs((input) => ({ ...categoryInputs, name: "", color: "#ececec" }));
             window.scrollTo(0, 0);
             setCatID("");
             setTimeout(() => {
                 SetSuccess('');
             }, 3000);
+            setGetPageStatus(false);
         } else {
             SetError(res_data.error);
             setTimeout(() => {
@@ -142,8 +147,15 @@ export default function AddNewUpdate() {
             }, 3000);
         }
         SetButtonDisabled(false);
-        setGetPageStatus(false);
+
     };
+
+    //clear input on cancel
+    const clearUpdate = () => {
+        setCatID(""); 
+        setCategoryInputs((input) => ({ ...categoryInputs, color: "#ececec", "name": "" }));
+        document.querySelector(".color-control > span > span").style = `background-color: ${categoryInputs.color}`;
+    }
 
     return (
         <>
@@ -151,11 +163,11 @@ export default function AddNewUpdate() {
                 <title>Dashboard</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0">Categories</h1>
+            <div className="content-header">
+                <div className="container-fluid">
+                    <div className="row mb-2">
+                        <div className="col-sm-6">
+                            <h1 className="m-0">Categories</h1>
                         </div>
                     </div>
                 </div>
@@ -174,7 +186,20 @@ export default function AddNewUpdate() {
                                             <input type="text" className="form-control" value={categoryInputs.name} onChange={handleInputChange} name="name" id="categoryName" />
                                         </div>
                                         <div className="form-group">
+                                            <label htmlFor="categoryName">Category Color</label>
+                                            <div className="color-control">
+                                                <InputColor
+                                                    initialValue={categoryInputs.color}
+                                                    value={categoryInputs.color}
+                                                    onChange={(e) => { setCategoryInputs((input) => ({ ...categoryInputs, color: e.hex })) }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
                                             <button className="btn btn-primary" disabled={buttonDisabled}>Save</button>
+                                            {(catID !== '') && (
+                                                <button className="btn btn-danger ml-2" onClick={(e) => { clearUpdate(); }}>Cancel</button>
+                                            )}
                                         </div>
                                     </form>
                                 </div>
