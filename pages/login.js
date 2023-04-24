@@ -15,6 +15,7 @@ import { getToken,setUserSession } from "@/helpers/Helper";
 import { POST_LOGIN } from "@/helpers/url_helper";
 
 import ErrorMessage from "@/components/ErrorMessage";
+import Link from "next/link";
 
 const Login = () => {
     const router = useRouter();
@@ -76,7 +77,7 @@ const Login = () => {
                 <div className="login-box">
                     <div className="card card-outline card-primary">
                         <div className="card-header text-center">
-                            <a href="/" className="h1"><img src="logo.svg" /></a>
+                            <Link href="/" className="h1"><Image src="logo.svg" width={183} height={48} /></Link>
                         </div>
                         <div className="card-body">
                             <p className="login-box-msg">Sign in to start your session</p>
